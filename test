@@ -1,30 +1,46 @@
-while true do
-    local function createOutline(character)
-        local humanoid = character:FindFirstChild("Humanoid")
-        if humanoid then
-            local outline = Instance.new("BoxHandleAdornment")
-            outline.Adornee = character:FindFirstChild("Head")  -- Outline the head
-            outline.Size = Vector3.new(1, 1, 1)  -- Adjust the size as needed
-            outline.Color3 = Color3.new(1, 1, 1)  -- Set the outline color
-            outline.Transparency = 0.5  -- Make it semi-transparent
-            outline.AlwaysOnTop = true  -- Render on top of other objects
-            outline.ZIndex = 1  -- Ensure it's visible through walls
-            outline.Parent = character
-    
-            humanoid.Died:Connect(function()
-                outline:Destroy()
-            end)
-        end
+-- Function to create an outline for a character
+local function createOutline(character)
+    -- Check if the character already has an outline
+    if character:FindFirstChild("Outline") then
+        return
     end
-    
-    for _, player in pairs(game.Players:GetPlayers()) do
+
+    local humanoid = character:FindFirstChild("Humanoid")
+    if humanoid then
+        local outline = Instance.new("BoxHandleAdornment")
+        outline.Name = "Outline"  -- Name the outline to check for it later
+        outline.Adornee = character:FindFirstChild("Head")  -- Outline the head
+        outline.Size = Vector3.new(1, 1, 1)  -- Adjust the size as needed
+        outline.Color3 = Color3.new(1, 1, 1)  -- Set the outline color
+        outline.Transparency = 0.5  -- Make it semi-transparent
+        outline.AlwaysOnTop = true  -- Render on top of other objects
+        outline.ZIndex = 1  -- Ensure it's visible through walls
+        outline.Parent = character
+
+        humanoid.Died:Connect(function()
+            outline:Destroy()
+        end)
+    end
+end
+
+-- Function to handle players and their characters
+local function handlePlayer(player)
+    -- Connect to CharacterAdded event for new characters
+    player.CharacterAdded:Connect(function(character)
+        createOutline(character)
+    end)
+
+    -- Check if player already has a character and create outline if needed
+    if player.Character then
         createOutline(player.Character)
     end
-    
-    game.Players.PlayerAdded:Connect(function(player)
-        player.CharacterAdded:Connect(function(character)
-            createOutline(character)
-        end)
-    end)
-    wait(1)
 end
+
+-- Loop to handle existing players and future players joining
+for _, player in pairs(game.Players:GetPlayers()) do
+    handlePlayer(player)
+end
+
+game.Players.PlayerAdded:Connect(function(player)
+    handlePlayer(player)
+end)
