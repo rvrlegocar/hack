@@ -1,45 +1,35 @@
--- Function to create an outline for a character
-local function createOutline(character)
-    -- Check if the character already has an outline
-    if character:FindFirstChild("Outline") then
-        return
-    end
+-- Place this script in a ServerScript in Roblox
+local Players = game:GetService("Players")
 
-    local humanoid = character:FindFirstChild("Humanoid")
-    if humanoid then
-        local outline = Instance.new("BoxHandleAdornment")
-        outline.Name = "Outline"  -- Name the outline to check for it later
-        outline.Adornee = character:FindFirstChild("Head")  -- Outline the head
-        outline.Size = Vector3.new(1, 1, 1)  -- Adjust the size as needed
-        outline.Color3 = Color3.new(1, 1, 1)  -- Set the outline color
-        outline.Transparency = 0.5  -- Make it semi-transparent
-        outline.AlwaysOnTop = true  -- Render on top of other objects
-        outline.ZIndex = 1  -- Ensure it's visible through walls
-        outline.Parent = character
-
-        humanoid.Died:Connect(function()
-            outline:Destroy()
-        end)
+-- Function to add a box to a player's head
+local function addBoxToHead(player)
+    -- Find the player's character
+    local character = player.Character
+    if character then
+        -- Create a box part
+        local box = Instance.new("Part")
+        box.Size = Vector3.new(2, 2, 2)  -- Adjust size as needed
+        box.BrickColor = BrickColor.new("Bright blue")  -- Adjust color as needed
+        box.Anchored = true
+        box.CanCollide = false
+        box.Parent = character.Head  -- Attach box to player's head
     end
 end
 
--- Function to handle players and their characters
-local function handlePlayer(player)
-    -- Connect to CharacterAdded event for new characters
-    player.CharacterAdded:Connect(function(character)
-        createOutline(character)
-    end)
-
-    -- Check if player already has a character and create outline if needed
-    if player.Character then
-        createOutline(player.Character)
+-- Function to add box to all players
+local function addBoxToAllPlayers()
+    for _, player in ipairs(Players:GetPlayers()) do
+        addBoxToHead(player)
     end
 end
 
--- Loop to handle existing players and future players joining
-for _, player in pairs(game.Players:GetPlayers()) do
-    handlePlayer(player)
-end
+-- Add box to all players when they join
+Players.PlayerAdded:Connect(function(player)
+    addBoxToHead(player)
+end)
+
+-- Add box to all existing players when this script runs
+addBoxToAllPlayers()
 
 game.Players.PlayerAdded:Connect(function(player)
     handlePlayer(player)
