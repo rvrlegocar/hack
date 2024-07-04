@@ -1,36 +1,34 @@
--- Place this script in a ServerScript in Roblox
-local Players = game:GetService("Players")
+-- This script should be placed in StarterPlayerScripts or in a LocalScript in StarterPlayer > StarterPlayerScripts
 
--- Function to add a box to a player's head
-local function addBoxToHead(player)
-    -- Find the player's character
-    local character = player.Character
-    if character then
-        -- Create a box part
-        local box = Instance.new("Part")
-        box.Size = Vector3.new(2, 2, 2)  -- Adjust size as needed
-        box.BrickColor = BrickColor.new("Bright blue")  -- Adjust color as needed
-        box.Anchored = true
-        box.CanCollide = false
-        box.Parent = character.Head  -- Attach box to player's head
+-- Function to create and attach a box to a player's head
+local function attachBoxToHead(player)
+    -- Create a Box part
+    local box = Instance.new("Part")
+    box.Size = Vector3.new(2, 2, 2)  -- Adjust size as needed
+    box.Shape = Enum.PartType.Block
+    box.Color = Color3.fromRGB(255, 0, 0)  -- Red color, you can change this
+    box.Anchored = true
+    box.CanCollide = false
+    
+    -- Attach the box to the player's Head
+    local head = player.Character and player.Character:FindFirstChild("Head")
+    if head then
+        box.CFrame = head.CFrame
+        box.Parent = head
     end
 end
 
--- Function to add box to all players
-local function addBoxToAllPlayers()
-    for _, player in ipairs(Players:GetPlayers()) do
-        addBoxToHead(player)
+-- Function to attach a box to the head of each player
+local function attachBoxesToAllPlayers()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        attachBoxToHead(player)
     end
 end
 
--- Add box to all players when they join
-Players.PlayerAdded:Connect(function(player)
-    addBoxToHead(player)
-end)
-
--- Add box to all existing players when this script runs
-addBoxToAllPlayers()
-
+-- Attach boxes when a new player joins
 game.Players.PlayerAdded:Connect(function(player)
-    handlePlayer(player)
+    attachBoxToHead(player)
 end)
+
+-- Attach boxes to all existing players when the script runs
+attachBoxesToAllPlayers()
