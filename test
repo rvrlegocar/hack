@@ -1,40 +1,35 @@
--- Define constants for outline color and size
-local OUTLINE_COLOR = Color3.new(1, 1, 1) -- White outline
-local OUTLINE_SIZE = 0.1 -- Adjust as needed for thickness
+-- Define parameters for the outline effect
+local outlineColor = Color3.new(1, 1, 1)  -- White outline color
+local outlineThickness = 0.1              -- Thickness of the outline
 
--- Function to add outline to a player's character
+-- Function to add outline to a character
 local function addOutline(character)
-    for _, part in ipairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            local outline = Instance.new("SelectionBox")
-            outline.Name = "Outline"
-            outline.LineThickness = OUTLINE_SIZE
-            outline.Color3 = OUTLINE_COLOR
-            outline.Adornee = part
-            outline.Parent = part
-        end
+    -- Check if character and its humanoid exist
+    if not character or not character:IsA("Model") then
+        return
     end
+
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then
+        return
+    end
+
+    -- Create outline effect
+    local outline = Instance.new("SelectionBox")
+    outline.Name = "Outline"
+    outline.Color3 = outlineColor
+    outline.LineThickness = outlineThickness
+    outline.Adornee = character.PrimaryPart or character.Head  -- Adjust adornee as needed
+    outline.Parent = character
 end
 
--- Function to apply outline to all players in the game
-local function applyOutlineToAllPlayers()
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        local character = player.Character
-        if character then
-            addOutline(character)
-        end
-        -- Handle case where character is not immediately available (e.g., respawn)
-        player.CharacterAdded:Connect(function(char)
-            addOutline(char)
-        end)
-    end
+-- Add outline to all existing players
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    addOutline(player.Character)
 end
 
--- Apply outline initially to all players in the game
-applyOutlineToAllPlayers()
-
--- Handle case where new players join after the script starts
-game.Players.PlayerAdded:Connect(function(player)
+-- Add outline to new players as they spawn
+game:GetService("Players").PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(function(character)
         addOutline(character)
     end)
