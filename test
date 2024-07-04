@@ -1,34 +1,20 @@
--- This script should be placed in StarterPlayerScripts or in a LocalScript in StarterPlayer > StarterPlayerScripts
-
--- Function to create and attach a box to a player's head
-local function attachBoxToHead(player)
-    -- Create a Box part
-    local box = Instance.new("Part")
-    box.Size = Vector3.new(2, 2, 2)  -- Adjust size as needed
-    box.Shape = Enum.PartType.Block
-    box.Color = Color3.fromRGB(255, 0, 0)  -- Red color, you can change this
-    box.Anchored = true
-    box.CanCollide = false
-    
-    -- Attach the box to the player's Head
+local function createHeadBox(player)
     local head = player.Character and player.Character:FindFirstChild("Head")
     if head then
-        box.CFrame = head.CFrame
+        local box = Instance.new("Part")
+        box.Size = Vector3.new(2, 2, 2)  -- Adjust the size as needed
+        box.Anchored = true
+        box.CanCollide = false
+        box.BrickColor = BrickColor.new("Bright blue")  -- Change color if desired
+        box.Transparency = 0.5
         box.Parent = head
     end
 end
 
--- Function to attach a box to the head of each player
-local function attachBoxesToAllPlayers()
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        attachBoxToHead(player)
-    end
+-- Attach the head box to all existing players
+for _, player in pairs(game.Players:GetPlayers()) do
+    createHeadBox(player)
 end
 
--- Attach boxes when a new player joins
-game.Players.PlayerAdded:Connect(function(player)
-    attachBoxToHead(player)
-end)
-
--- Attach boxes to all existing players when the script runs
-attachBoxesToAllPlayers()
+-- Attach the head box to any new players
+game.Players.PlayerAdded:Connect(createHeadBox)
