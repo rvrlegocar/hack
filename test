@@ -1,20 +1,28 @@
-local function createHeadBox(player)
-    local head = player.Character and player.Character:FindFirstChild("Head")
-    if head then
+-- Get all players in the game
+local players = game:GetService("Players"):GetPlayers()
+
+-- Function to add a box to a player's head
+local function addBoxToHead(player)
+    -- Get the player's character
+    local character = player.Character
+    if character then
+        -- Create a new part (box)
         local box = Instance.new("Part")
-        box.Size = Vector3.new(2, 2, 2)  -- Adjust the size as needed
-        box.Anchored = true
-        box.CanCollide = false
-        box.BrickColor = BrickColor.new("Bright blue")  -- Change color if desired
-        box.Transparency = 0.5
-        box.Parent = head
+        box.Size = Vector3.new(2, 2, 2)  -- Set the size of the box
+        box.Shape = Enum.PartType.Block  -- Set the shape to a block
+        box.BrickColor = BrickColor.new("Bright blue")  -- Set the color of the box
+        box.Anchored = true  -- Make sure the box doesn't fall due to gravity
+
+        -- Position the box on the player's head
+        local head = character:WaitForChild("Head")
+        box.CFrame = head.CFrame * CFrame.new(0, head.Size.Y / 2 + box.Size.Y / 2, 0)
+
+        -- Parent the box to the character's head
+        box.Parent = character
     end
 end
 
--- Attach the head box to all existing players
-for _, player in pairs(game.Players:GetPlayers()) do
-    createHeadBox(player)
+-- Add a box to the head of each player in the game
+for _, player in ipairs(players) do
+    addBoxToHead(player)
 end
-
--- Attach the head box to any new players
-game.Players.PlayerAdded:Connect(createHeadBox)
