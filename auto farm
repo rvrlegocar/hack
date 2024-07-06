@@ -9,6 +9,10 @@ local function toggleLoop()
     end
 end
 
+-- Create a ScreenGui instance
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer.PlayerGui
+
 -- Create a TextButton at the top left corner of the screen
 local button = Instance.new("TextButton")
 button.Text = "Toggle Loop"
