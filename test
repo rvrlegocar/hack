@@ -1,36 +1,59 @@
--- Define parameters for the outline effect
-local outlineColor = Color3.new(1, 1, 1)  -- White outline color
-local outlineThickness = 0.1              -- Thickness of the outline
-
--- Function to add outline to a character
-local function addOutline(character)
-    -- Check if character and its humanoid exist
-    if not character or not character:IsA("Model") then
-        return
+-- Function to find the closest player to the camera, excluding the local player
+local function findClosestPlayer()
+    local closestPlayer = nil
+    local closestDistance = math.huge
+    local localPlayer = game.Players.LocalPlayer  -- Get the local player
+    
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer then  -- Skip the local player
+            local character = player.Character
+            local head = character and character:FindFirstChild("Head")
+            
+            if head then
+                local distance = (game.Workspace.CurrentCamera.CFrame.p - head.Position).magnitude
+                if distance < closestDistance then
+                    closestDistance = distance
+                    closestPlayer = player
+                end
+            end
+        end
     end
-
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if not humanoid then
-        return
-    end
-
-    -- Create outline effect
-    local outline = Instance.new("SelectionBox")
-    outline.Name = "Outline"
-    outline.Color3 = outlineColor
-    outline.LineThickness = outlineThickness
-    outline.Adornee = character.PrimaryPart or character.Head  -- Adjust adornee as needed
-    outline.Parent = character
+    
+    return closestPlayer
 end
 
--- Add outline to all existing players
-for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-    addOutline(player.Character)
+-- Function to calculate camera offset dynamically based on distance
+local function calculateOffset(target)
+    local head = target.Character and target.Character:FindFirstChild("Head")
+    if head then
+        local distance = (game.Workspace.CurrentCamera.CFrame.p - head.Position).magnitude
+        local yOffset = -distance * 0.1  -- Adjust the multiplier to control the offset
+        return yOffset
+    end
+    return 0
 end
 
--- Add outline to new players as they spawn
-game:GetService("Players").PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function(character)
-        addOutline(character)
-    end)
+-- Function to update camera position to look at a target player's head with offset
+local function updateCamera(targetPlayer)
+    local head = targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head")
+    if head then
+        local targetPosition = head.Position + Vector3.new(0, calculateOffset(targetPlayer), 0)
+        game.Workspace.CurrentCamera.CFrame = CFrame.new(game.Workspace.CurrentCamera.CFrame.p, targetPosition)
+    end
+end
+
+-- Initial setup: Find the closest player and focus on them initially
+local initialTarget = findClosestPlayer()
+if initialTarget then
+    updateCamera(initialTarget)
+else
+    print("No players found.")
+end
+
+-- Connect the update function to render step to continuously update camera position
+game:GetService("RunService").RenderStepped:Connect(function()
+    local closestPlayer = findClosestPlayer()
+    if closestPlayer then
+        updateCamera(closestPlayer)
+    end
 end)
