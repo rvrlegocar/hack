@@ -1,3 +1,38 @@
+-- Define a variable to track if the loop should run
+local isLooping = false
+
+-- Function to create a button
+local function createButton()
+    -- Create a ScreenGui to hold GUI elements
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "CustomGui"  -- Give it a name if needed
+    screenGui.Parent = game.Players.LocalPlayer.PlayerGui  -- Parent to PlayerGui for visibility
+
+    -- Create the button inside the ScreenGui
+    local button = Instance.new("TextButton")
+    button.Text = "Start Loop (OFF)"
+    button.Size = UDim2.new(0, 200, 0, 50) -- Width, Height
+    button.Position = UDim2.new(0, 10, 0, 10) -- X position, Y position
+    button.Parent = screenGui  -- Parent the button to the ScreenGui
+
+    -- Event handler for when button is clicked
+    button.MouseButton1Click:Connect(function()
+        -- Toggle the loop state
+        isLooping = not isLooping
+        
+        -- Update button text based on loop state
+        if isLooping then
+            button.Text = "Stop Loop (ON)"
+        else
+            button.Text = "Start Loop (OFF)"
+        end
+    end)
+end
+
+-- Call the function to create the button
+createButton()
+
+-- Function to interact with items and loot
 local function printContents(folder)
     for _, item in pairs(folder:GetChildren()) do
         if item:IsA("BasePart") then
@@ -19,13 +54,14 @@ local function printContents(folder)
             local proximityPrompt = item:FindFirstChild("ProximityPrompt")
             if proximityPrompt then
                 proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
-                wait(1)
+                wait(0.5)
                 proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
             end
         end
     end
 end
 
+-- Function to check for loot and items
 local function checkForLootAndItems()
     local workspace = game:GetService("Workspace")
     local storagesFolder = workspace:FindFirstChild("Storages")
@@ -52,8 +88,9 @@ local function checkForLootAndItems()
     end
 end
 
-game.Players.LocalPlayer.CharacterAdded:Connect(checkForLootAndItems)
-
-if game.Players.LocalPlayer.Character then
-    checkForLootAndItems()
-end
+-- Connect function to run checkForLootAndItems periodically
+game:GetService("RunService").Heartbeat:Connect(function()
+    if isLooping then
+        checkForLootAndItems()
+    end
+end)
