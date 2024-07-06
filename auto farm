@@ -1,0 +1,63 @@
+local function interactWithItem(item)
+    if item:IsA("BasePart") then
+        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(item.Position))
+        wait(1)
+        
+        -- Look downward after teleporting
+        local humanoid = game.Players.LocalPlayer.Character.Humanoid
+        local rootPart = humanoid.RootPart
+        local camera = game.Workspace.CurrentCamera
+        
+        local rootPosition = rootPart.Position
+        local lookAtPosition = rootPosition - Vector3.new(0, 10, 0) -- Adjust the downward offset as needed
+        
+        camera.CFrame = CFrame.new(camera.CFrame.Position, lookAtPosition)
+        
+        -- Check for proximity prompt (assuming it's named "ProximityPrompt")
+        local proximityPrompt = item:FindFirstChild("ProximityPrompt")
+        if proximityPrompt then
+            proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
+            wait(0.7)
+            proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
+        end
+    end
+end
+
+local function checkForLootAndItems()
+    local workspace = game:GetService("Workspace")
+    local storagesFolder = workspace:FindFirstChild("Storages")
+
+    if storagesFolder then
+        while true do
+            for _, item in pairs(storagesFolder:GetChildren()) do
+                if item:IsA("Model") and item.Name == "Room" then
+                    local contentsFolder = item:FindFirstChild("Contents")
+                    if contentsFolder then
+                        local lootFolder = contentsFolder:FindFirstChild("Loot")
+                        if lootFolder then
+                            for _, lootItem in pairs(lootFolder:GetChildren()) do
+                                interactWithItem(lootItem)
+                            end
+                        end
+
+                        local itemsFolder = contentsFolder:FindFirstChild("Items")
+                        if itemsFolder then
+                            for _, itemItem in pairs(itemsFolder:GetChildren()) do
+                                interactWithItem(itemItem)
+                            end
+                        end
+                    end
+                end
+            end
+            wait(1)  -- Adjust wait time between checks as needed
+        end
+    else
+        print("Storages folder not found in Workspace.")
+    end
+end
+
+game.Players.LocalPlayer.CharacterAdded:Connect(checkForLootAndItems)
+
+if game.Players.LocalPlayer.Character then
+    checkForLootAndItems()
+end
