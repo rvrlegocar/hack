@@ -1,3 +1,24 @@
+-- Create the GUI elements
+local ScreenGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("TextButton")
+
+-- Configure the ScreenGui
+ScreenGui.Name = "AimBotToggleGUI"
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Configure the ToggleButton
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = ScreenGui
+ToggleButton.Text = "Toggle Aimbot"
+ToggleButton.Position = UDim2.new(1, -110, 0, 10) -- Adjusted to top right
+ToggleButton.Size = UDim2.new(0, 100, 0, 50)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.TextScaled = true
+
+-- Variables to control the aimbot state
+local aimBotEnabled = true
+
 -- Function to find the closest player to the camera, excluding the local player
 local function findClosestPlayer()
     local closestPlayer = nil
@@ -50,10 +71,24 @@ else
     print("No players found.")
 end
 
--- Connect the update function to render step to continuously update camera position
+-- Connect the update function to render step to continuously update camera position if aimbot is enabled
 game:GetService("RunService").RenderStepped:Connect(function()
-    local closestPlayer = findClosestPlayer()
-    if closestPlayer then
-        updateCamera(closestPlayer)
+    if aimBotEnabled then
+        local closestPlayer = findClosestPlayer()
+        if closestPlayer then
+            updateCamera(closestPlayer)
+        end
+    end
+end)
+
+-- Toggle the aimbot on button click
+ToggleButton.MouseButton1Click:Connect(function()
+    aimBotEnabled = not aimBotEnabled
+    if aimBotEnabled then
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        ToggleButton.Text = "Aimbot On"
+    else
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        ToggleButton.Text = "Aimbot Off"
     end
 end)
