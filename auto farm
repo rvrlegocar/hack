@@ -1,12 +1,26 @@
--- Define variables
-local toggleButton = nil
-local isLoopRunning = true  -- Initial state is running
+-- Define a variable to keep track of whether the loop is running
+local isLoopRunning = true  -- Default to true (loop is running)
 
--- Function to handle item interaction
+-- Function to handle button click
+local function toggleLoop()
+    isLoopRunning = not isLoopRunning  -- Toggle the loop state
+end
+
+-- Create a UI button (example using TextButton)
+local button = Instance.new("TextButton")
+button.Text = "Toggle Loop"
+button.Position = UDim2.new(0, 10, 0, 10)  -- Position at top left corner
+button.Size = UDim2.new(0, 100, 0, 50)  -- Button size
+button.Parent = game.Players.LocalPlayer.PlayerGui  -- Parent to PlayerGui
+
+-- Connect button click event
+button.MouseButton1Click:Connect(toggleLoop)
+
+-- Function to interact with items
 local function interactWithItem(item)
     if item:IsA("BasePart") then
         game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(item.Position))
-        wait(1)
+        wait(0.1)
         
         -- Look downward after teleporting
         local humanoid = game.Players.LocalPlayer.Character.Humanoid
@@ -17,6 +31,8 @@ local function interactWithItem(item)
         local lookAtPosition = rootPosition - Vector3.new(0, 10, 0) -- Adjust the downward offset as needed
         
         camera.CFrame = CFrame.new(camera.CFrame.Position, lookAtPosition)
+
+        wait(0.1)
         
         -- Check for proximity prompt (assuming it's named "ProximityPrompt")
         local proximityPrompt = item:FindFirstChild("ProximityPrompt")
@@ -34,22 +50,25 @@ local function checkForLootAndItems()
     local storagesFolder = workspace:FindFirstChild("Storages")
 
     if storagesFolder then
-        while isLoopRunning do  -- Check if the loop should continue
-            for _, item in pairs(storagesFolder:GetChildren()) do
-                if item:IsA("Model") and item.Name == "Room" then
-                    local contentsFolder = item:FindFirstChild("Contents")
-                    if contentsFolder then
-                        local lootFolder = contentsFolder:FindFirstChild("Loot")
-                        if lootFolder then
-                            for _, lootItem in pairs(lootFolder:GetChildren()) do
-                                interactWithItem(lootItem)
+        while true do
+            -- Check if the loop should continue running
+            if isLoopRunning then
+                for _, item in pairs(storagesFolder:GetChildren()) do
+                    if item:IsA("Model") and item.Name == "Room" then
+                        local contentsFolder = item:FindFirstChild("Contents")
+                        if contentsFolder then
+                            local lootFolder = contentsFolder:FindFirstChild("Loot")
+                            if lootFolder then
+                                for _, lootItem in pairs(lootFolder:GetChildren()) do
+                                    interactWithItem(lootItem)
+                                end
                             end
-                        end
 
-                        local itemsFolder = contentsFolder:FindFirstChild("Items")
-                        if itemsFolder then
-                            for _, itemItem in pairs(itemsFolder:GetChildren()) do
-                                interactWithItem(itemItem)
+                            local itemsFolder = contentsFolder:FindFirstChild("Items")
+                            if itemsFolder then
+                                for _, itemItem in pairs(itemsFolder:GetChildren()) do
+                                    interactWithItem(itemItem)
+                                end
                             end
                         end
                     end
@@ -62,29 +81,10 @@ local function checkForLootAndItems()
     end
 end
 
--- Function to toggle loop on/off
-local function toggleLoop()
-    isLoopRunning = not isLoopRunning
-    if isLoopRunning then
-        toggleButton.Text = "Loop: ON"
-        checkForLootAndItems()  -- Start loop if toggled on
-    else
-        toggleButton.Text = "Loop: OFF"
-    end
-end
+-- Start the loop when the character is added
+game.Players.LocalPlayer.CharacterAdded:Connect(checkForLootAndItems)
 
--- Create UI button
-toggleButton = Instance.new("TextButton")
-toggleButton.Parent = game.Players.LocalPlayer.PlayerGui -- Or any UI parent
-toggleButton.Position = UDim2.new(0, 10, 0, 10)  -- Top left corner
-toggleButton.Size = UDim2.new(0, 120, 0, 30)
-toggleButton.Text = "Loop: ON"
-toggleButton.MouseButton1Click:Connect(toggleLoop)
-
--- Check if player's character is already added
+-- Initial check when the character is already added
 if game.Players.LocalPlayer.Character then
     checkForLootAndItems()
 end
-
--- Connect character added event
-game.Players.LocalPlayer.CharacterAdded:Connect(checkForLootAndItems)
