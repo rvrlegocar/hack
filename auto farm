@@ -63,7 +63,7 @@ local function printContents(folder)
             local proximityPrompt = item:FindFirstChild("ProximityPrompt")
             if proximityPrompt then
                 proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
-                wait(0.7)
+                wait(0.8)
                 proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
             end
         end
