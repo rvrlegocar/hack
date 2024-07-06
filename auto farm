@@ -1,3 +1,8 @@
+-- Define variables
+local toggleButton = nil
+local isLoopRunning = true  -- Initial state is running
+
+-- Function to handle item interaction
 local function interactWithItem(item)
     if item:IsA("BasePart") then
         game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(item.Position))
@@ -23,12 +28,13 @@ local function interactWithItem(item)
     end
 end
 
+-- Function to check for loot and items
 local function checkForLootAndItems()
     local workspace = game:GetService("Workspace")
     local storagesFolder = workspace:FindFirstChild("Storages")
 
     if storagesFolder then
-        while true do
+        while isLoopRunning do  -- Check if the loop should continue
             for _, item in pairs(storagesFolder:GetChildren()) do
                 if item:IsA("Model") and item.Name == "Room" then
                     local contentsFolder = item:FindFirstChild("Contents")
@@ -56,8 +62,29 @@ local function checkForLootAndItems()
     end
 end
 
-game.Players.LocalPlayer.CharacterAdded:Connect(checkForLootAndItems)
+-- Function to toggle loop on/off
+local function toggleLoop()
+    isLoopRunning = not isLoopRunning
+    if isLoopRunning then
+        toggleButton.Text = "Loop: ON"
+        checkForLootAndItems()  -- Start loop if toggled on
+    else
+        toggleButton.Text = "Loop: OFF"
+    end
+end
 
+-- Create UI button
+toggleButton = Instance.new("TextButton")
+toggleButton.Parent = game.Players.LocalPlayer.PlayerGui -- Or any UI parent
+toggleButton.Position = UDim2.new(0, 10, 0, 10)  -- Top left corner
+toggleButton.Size = UDim2.new(0, 120, 0, 30)
+toggleButton.Text = "Loop: ON"
+toggleButton.MouseButton1Click:Connect(toggleLoop)
+
+-- Check if player's character is already added
 if game.Players.LocalPlayer.Character then
     checkForLootAndItems()
 end
+
+-- Connect character added event
+game.Players.LocalPlayer.CharacterAdded:Connect(checkForLootAndItems)
