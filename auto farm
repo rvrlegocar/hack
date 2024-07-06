@@ -11,7 +11,7 @@ local button = Instance.new("TextButton")
 button.Text = "Toggle Loop"
 button.Position = UDim2.new(0, 10, 0, 10)  -- Position at top left corner
 button.Size = UDim2.new(0, 100, 0, 50)  -- Button size
-button.Parent = game.Players.LocalPlayer.PlayerGui  -- Parent to PlayerGui
+button.Parent = game.Players.LocalPlayer.PlayerGui.ScreenGui  -- Parent to ScreenGui
 
 -- Connect button click event
 button.MouseButton1Click:Connect(toggleLoop)
@@ -31,7 +31,6 @@ local function interactWithItem(item)
         local lookAtPosition = rootPosition - Vector3.new(0, 10, 0) -- Adjust the downward offset as needed
         
         camera.CFrame = CFrame.new(camera.CFrame.Position, lookAtPosition)
-
         wait(0.1)
         
         -- Check for proximity prompt (assuming it's named "ProximityPrompt")
