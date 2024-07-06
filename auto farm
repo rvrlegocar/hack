@@ -1,19 +1,22 @@
--- Define a variable to keep track of whether the loop is running
-local isLoopRunning = true  -- Default to true (loop is running)
+-- Define a variable to track if the loop is running
+local isLoopRunning = true
 
--- Function to handle button click
+-- Function to toggle the loop on/off
 local function toggleLoop()
-    isLoopRunning = not isLoopRunning  -- Toggle the loop state
+    isLoopRunning = not isLoopRunning
+    if isLoopRunning then
+        checkForLootAndItems()
+    end
 end
 
--- Create a UI button (example using TextButton)
+-- Create a TextButton at the top left corner of the screen
 local button = Instance.new("TextButton")
 button.Text = "Toggle Loop"
-button.Position = UDim2.new(0, 10, 0, 10)  -- Position at top left corner
-button.Size = UDim2.new(0, 100, 0, 50)  -- Button size
-button.Parent = game.Players.LocalPlayer.PlayerGui.ScreenGui  -- Parent to ScreenGui
+button.Size = UDim2.new(0, 120, 0, 50)
+button.Position = UDim2.new(0.01, 0, 0.01, 0)  -- 1% from the left and top edge
+button.Parent = game.Players.LocalPlayer.PlayerGui.ScreenGui  -- Replace 'ScreenGui' with your actual ScreenGui instance
 
--- Connect button click event
+-- Connect button click event to toggle function
 button.MouseButton1Click:Connect(toggleLoop)
 
 -- Function to interact with items
@@ -45,45 +48,46 @@ end
 
 -- Function to check for loot and items
 local function checkForLootAndItems()
+    if not isLoopRunning then
+        return
+    end
+    
     local workspace = game:GetService("Workspace")
     local storagesFolder = workspace:FindFirstChild("Storages")
 
     if storagesFolder then
         while true do
-            -- Check if the loop should continue running
-            if isLoopRunning then
-                for _, item in pairs(storagesFolder:GetChildren()) do
-                    if item:IsA("Model") and item.Name == "Room" then
-                        local contentsFolder = item:FindFirstChild("Contents")
-                        if contentsFolder then
-                            local lootFolder = contentsFolder:FindFirstChild("Loot")
-                            if lootFolder then
-                                for _, lootItem in pairs(lootFolder:GetChildren()) do
-                                    interactWithItem(lootItem)
-                                end
+            for _, item in pairs(storagesFolder:GetChildren()) do
+                if item:IsA("Model") and item.Name == "Room" then
+                    local contentsFolder = item:FindFirstChild("Contents")
+                    if contentsFolder then
+                        local lootFolder = contentsFolder:FindFirstChild("Loot")
+                        if lootFolder then
+                            for _, lootItem in pairs(lootFolder:GetChildren()) do
+                                interactWithItem(lootItem)
                             end
+                        end
 
-                            local itemsFolder = contentsFolder:FindFirstChild("Items")
-                            if itemsFolder then
-                                for _, itemItem in pairs(itemsFolder:GetChildren()) do
-                                    interactWithItem(itemItem)
-                                end
+                        local itemsFolder = contentsFolder:FindFirstChild("Items")
+                        if itemsFolder then
+                            for _, itemItem in pairs(itemsFolder:GetChildren()) do
+                                interactWithItem(itemItem)
                             end
                         end
                     end
                 end
             end
-            wait(1)  -- Adjust wait time between checks as needed
+            wait(0.1)  -- Adjust wait time between checks as needed
         end
     else
         print("Storages folder not found in Workspace.")
     end
 end
 
--- Start the loop when the character is added
+-- Connect to CharacterAdded event to start checking for loot and items
 game.Players.LocalPlayer.CharacterAdded:Connect(checkForLootAndItems)
 
--- Initial check when the character is already added
+-- Start checking for loot and items immediately if character already exists
 if game.Players.LocalPlayer.Character then
     checkForLootAndItems()
 end
