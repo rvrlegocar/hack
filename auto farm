@@ -1,5 +1,6 @@
--- Define a variable to track if the loop should run
+-- Define variables to track if the loop should run and to prevent multiple concurrent loops
 local isLooping = false
+local isChecking = false
 
 -- Function to create a button
 local function createButton()
@@ -63,6 +64,9 @@ end
 
 -- Function to check for loot and items
 local function checkForLootAndItems()
+    if isChecking then return end
+    isChecking = true
+
     local workspace = game:GetService("Workspace")
     local storagesFolder = workspace:FindFirstChild("Storages")
 
@@ -86,11 +90,19 @@ local function checkForLootAndItems()
     else
         print("Storages folder not found in Workspace.")
     end
+
+    isChecking = false
 end
 
 -- Connect function to run checkForLootAndItems periodically
 game:GetService("RunService").Heartbeat:Connect(function()
     if isLooping then
         checkForLootAndItems()
+        wait(1) -- Adjust this value to control how frequently you want to check
     end
 end)
+
+-- Check for loot and items immediately if the player's character already exists
+if game.Players.LocalPlayer.Character then
+    checkForLootAndItems()
+end
