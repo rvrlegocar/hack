@@ -48,7 +48,7 @@ local function calculateOffset(target)
     local head = target.Character and target.Character:FindFirstChild("Head")
     if head then
         local distance = (game.Workspace.CurrentCamera.CFrame.p - head.Position).magnitude
-        local yOffset = -distance * 0.08  -- Adjust the multiplier to control the offset
+        local yOffset = -distance * 0.09  -- Adjust the multiplier to control the offset
         return yOffset
     end
     return 0
