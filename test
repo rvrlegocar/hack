@@ -4,6 +4,7 @@ local ToggleButton = Instance.new("TextButton")
 
 -- Configure the ScreenGui
 ScreenGui.Name = "AimBotToggleGUI"
+ScreenGui.ResetOnSpawn = false  -- Ensure the GUI stays visible after respawn
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Configure the ToggleButton
