@@ -2,6 +2,11 @@
 local isLooping = false
 local isChecking = false
 
+-- Offsets for teleportation
+local xOffset = 0
+local yOffset = 1
+local zOffset = 0
+
 -- Function to create a button
 local function createButton()
     -- Create a ScreenGui to hold GUI elements
@@ -37,7 +42,10 @@ createButton()
 local function printContents(folder)
     for _, item in pairs(folder:GetChildren()) do
         if item:IsA("BasePart") then
-            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(item.Position))
+            -- Apply offsets to the item position
+            local targetPosition = item.Position + Vector3.new(xOffset, yOffset, zOffset)
+            
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
             wait(0.1)
             
             -- Look downward after teleporting
