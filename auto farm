@@ -1,11 +1,14 @@
 -- Define variables to track if the loop should run and to prevent multiple concurrent loops
-local isLooping = false
+local isLooping = true -- Set to true initially to start the loop
 local isChecking = false
 
 -- Offsets for teleportation
 local xOffset = 0
 local yOffset = 1.5
 local zOffset = 0
+
+-- Reference to the button for updating text
+local button = nil
 
 -- Function to create a button
 local function createButton()
@@ -15,8 +18,8 @@ local function createButton()
     screenGui.Parent = game.Players.LocalPlayer.PlayerGui  -- Parent to PlayerGui for visibility
 
     -- Create the button inside the ScreenGui
-    local button = Instance.new("TextButton")
-    button.Text = "Start Loop (OFF)"
+    button = Instance.new("TextButton")
+    button.Text = "Stop Loop (ON)"  -- Set initial text to indicate the loop is ON
     button.Size = UDim2.new(0, 200, 0, 50) -- Width, Height
     button.Position = UDim2.new(0, 10, 0, 10) -- X position, Y position
     button.Parent = screenGui  -- Parent the button to the ScreenGui
@@ -96,9 +99,14 @@ local function printContents(folder)
             local proximityPrompt = item:FindFirstChild("ProximityPrompt")
             if proximityPrompt then
                 proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
-                wait(0.8)
+                wait(1)
                 proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
             end
+        end
+        
+        -- Check if loop should continue
+        if not isLooping then
+            break
         end
     end
     return foundItem
@@ -137,6 +145,11 @@ local function checkForLootAndItems()
                         foundItems = printContents(itemsFolder) or foundItems
                     end
                 end
+            end
+            
+            -- Check if loop should continue
+            if not isLooping then
+                break
             end
         end
     else
