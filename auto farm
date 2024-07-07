@@ -40,8 +40,10 @@ createButton()
 
 -- Function to interact with items and loot
 local function printContents(folder)
+    local foundItem = false
     for _, item in pairs(folder:GetChildren()) do
         if item:IsA("BasePart") then
+            foundItem = true
             -- Apply offsets to the item position
             local targetPosition = item.Position + Vector3.new(xOffset, yOffset, zOffset)
             
@@ -68,6 +70,7 @@ local function printContents(folder)
             end
         end
     end
+    return foundItem
 end
 
 -- Function to check for loot and items
@@ -77,6 +80,7 @@ local function checkForLootAndItems()
 
     local workspace = game:GetService("Workspace")
     local storagesFolder = workspace:FindFirstChild("Storages")
+    local foundItems = false
 
     if storagesFolder then
         for _, item in pairs(storagesFolder:GetChildren()) do
@@ -85,18 +89,22 @@ local function checkForLootAndItems()
                 if contentsFolder then
                     local lootFolder = contentsFolder:FindFirstChild("Loot")
                     if lootFolder then
-                        printContents(lootFolder)
+                        foundItems = printContents(lootFolder) or foundItems
                     end
 
                     local itemsFolder = contentsFolder:FindFirstChild("Items")
                     if itemsFolder then
-                        printContents(itemsFolder)
+                        foundItems = printContents(itemsFolder) or foundItems
                     end
                 end
             end
         end
     else
         print("Storages folder not found in Workspace.")
+    end
+
+    if not foundItems then
+        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(0, 0, 0))
     end
 
     isChecking = false
