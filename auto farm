@@ -4,7 +4,7 @@ local isChecking = false
 
 -- Offsets for teleportation
 local xOffset = 0
-local yOffset = 2
+local yOffset = 3
 local zOffset = 0
 
 -- Function to create a button
