@@ -167,7 +167,7 @@ end
 game:GetService("RunService").Heartbeat:Connect(function()
     if isLooping then
         checkForLootAndItems()
-        wait(5) -- Adjust this value to control how frequently you want to check
+        wait(0.0001) -- Adjust this value to control how frequently you want to check
     end
 end)
 
