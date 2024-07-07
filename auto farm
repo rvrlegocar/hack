@@ -3,8 +3,8 @@ local isLooping = true -- Set to true initially to start the loop
 local isChecking = false
 
 -- Offsets for teleportation
-local xOffset = 1
-local yOffset = 2
+local xOffset = 0
+local yOffset = 2.5
 local zOffset = 0
 
 -- Reference to the button for updating text
