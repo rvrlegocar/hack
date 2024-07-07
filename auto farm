@@ -4,7 +4,7 @@ local isChecking = false
 
 -- Offsets for teleportation
 local xOffset = 0
-local yOffset = 3
+local yOffset = 2.5
 local zOffset = 0
 
 -- Function to create a button
@@ -79,7 +79,6 @@ local function printContents(folder)
             local targetPosition = itemPosition + Vector3.new(xOffset, yOffset, zOffset)
             
             game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
-            wait(0.1)
             
             -- Look downward after teleporting
             local humanoid = game.Players.LocalPlayer.Character.Humanoid
