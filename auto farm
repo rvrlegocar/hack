@@ -79,6 +79,7 @@ local function printContents(folder)
             local targetPosition = itemPosition + Vector3.new(xOffset, yOffset, zOffset)
             
             game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+            wait(0.1)
             
             -- Look downward after teleporting
             local humanoid = game.Players.LocalPlayer.Character.Humanoid
