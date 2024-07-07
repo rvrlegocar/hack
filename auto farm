@@ -2,10 +2,8 @@
 local isLooping = false
 local isChecking = false
 
--- Offsets for teleportation
-local xOffset = 0
-local yOffset = 1
-local zOffset = 0
+-- Speed for moving towards the target position
+local moveSpeed = 32
 
 -- Function to create a button
 local function createButton()
@@ -45,16 +43,22 @@ local function printContents(folder)
         if item:IsA("BasePart") then
             foundItem = true
             -- Apply offsets to the item position
-            local targetPosition = item.Position + Vector3.new(xOffset, yOffset, zOffset)
+            local targetPosition = item.Position + Vector3.new(0, 1, 0)
             
-            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+            -- Move to the target position
+            local character = game.Players.LocalPlayer.Character
+            local rootPart = character.PrimaryPart
+            local direction = (targetPosition - rootPart.Position).Unit
+            
+            while (targetPosition - rootPart.Position).Magnitude > 1 do
+                rootPart.CFrame = rootPart.CFrame + direction * moveSpeed * game:GetService("RunService").Heartbeat:Wait()
+            end
+            
             wait(0.1)
             
-            -- Look downward after teleporting
-            local humanoid = game.Players.LocalPlayer.Character.Humanoid
-            local rootPart = humanoid.RootPart
+            -- Look downward after moving
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
             local camera = game.Workspace.CurrentCamera
-            
             local rootPosition = rootPart.Position
             local lookAtPosition = rootPosition - Vector3.new(0, 10, 0) -- Adjust the downward offset as needed
             
@@ -117,6 +121,47 @@ local function checkForLootAndItems()
     end
 
     isChecking = false
+end
+
+-- Function to interact with items and loot
+local function printContents(folder)
+    local foundItem = false
+    for _, item in pairs(folder:GetChildren()) do
+        if item:IsA("BasePart") then
+            foundItem = true
+            -- Apply offsets to the item position
+            local targetPosition = item.Position + Vector3.new(0, 1, 0)
+            
+            -- Move to the target position
+            local character = game.Players.LocalPlayer.Character
+            local rootPart = character.PrimaryPart
+            local direction = (targetPosition - rootPart.Position).Unit
+            
+            while (targetPosition - rootPart.Position).Magnitude > 1 do
+                rootPart.CFrame = rootPart.CFrame + direction * moveSpeed * game:GetService("RunService").Heartbeat:Wait()
+            end
+            
+            wait(0.1)
+            
+            -- Look downward after moving
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            local camera = game.Workspace.CurrentCamera
+            local rootPosition = rootPart.Position
+            local lookAtPosition = rootPosition - Vector3.new(0, 10, 0) -- Adjust the downward offset as needed
+            
+            camera.CFrame = CFrame.new(camera.CFrame.Position, lookAtPosition)
+            wait(0.1)
+            
+            -- Check for proximity prompt (assuming it's named "ProximityPrompt")
+            local proximityPrompt = item:FindFirstChild("ProximityPrompt")
+            if proximityPrompt then
+                proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
+                wait(0.8)
+                proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
+            end
+        end
+    end
+    return foundItem
 end
 
 -- Connect function to run checkForLootAndItems periodically
