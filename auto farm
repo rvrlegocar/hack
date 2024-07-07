@@ -3,7 +3,7 @@ local isLooping = true -- Set to true initially to start the loop
 local isChecking = false
 
 -- Offsets for teleportation
-local xOffset = 0
+local xOffset = 0.5
 local yOffset = 2
 local zOffset = 0
 
