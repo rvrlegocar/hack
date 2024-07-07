@@ -42,8 +42,7 @@ createButton()
 local function printContents(folder)
     local foundItem = false
     for _, item in pairs(folder:GetChildren()) do
-        -- Check for different types of objects besides BasePart
-        if item:IsA("BasePart") or item:IsA("Model") or item:IsA("MeshPart") then
+        if item:IsA("BasePart") then
             foundItem = true
             -- Apply offsets to the item position
             local targetPosition = item.Position + Vector3.new(xOffset, yOffset, zOffset)
@@ -69,9 +68,6 @@ local function printContents(folder)
                 wait(0.8)
                 proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
             end
-        elseif item:IsA("Folder") then
-            -- Recursively check folders
-            foundItem = printContents(item) or foundItem
         end
     end
     return foundItem
