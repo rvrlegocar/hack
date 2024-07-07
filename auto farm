@@ -78,6 +78,15 @@ local function checkForLootAndItems()
     if isChecking then return end
     isChecking = true
 
+    local player = game.Players.LocalPlayer
+    local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+
+    if humanoid and humanoid.Health < humanoid.MaxHealth then
+        player.Character:SetPrimaryPartCFrame(CFrame.new(0, -100, 0))
+        isChecking = false
+        return
+    end
+
     local workspace = game:GetService("Workspace")
     local storagesFolder = workspace:FindFirstChild("Storages")
     local foundItems = false
@@ -104,7 +113,7 @@ local function checkForLootAndItems()
     end
 
     if not foundItems then
-        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(0, -100, 0))
+        player.Character:SetPrimaryPartCFrame(CFrame.new(0, -100, 0))
     end
 
     isChecking = false
