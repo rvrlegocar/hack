@@ -82,7 +82,7 @@ local function printContents(folder)
             local targetPosition = itemPosition + Vector3.new(xOffset, yOffset, zOffset)
             
             game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
-            wait(0.1)
+            wait(0.01)
             
             -- Look downward after teleporting
             local humanoid = game.Players.LocalPlayer.Character.Humanoid
@@ -93,7 +93,7 @@ local function printContents(folder)
             local lookAtPosition = rootPosition - Vector3.new(0, 10, 0) -- Adjust the downward offset as needed
             
             camera.CFrame = CFrame.new(camera.CFrame.Position, lookAtPosition)
-            wait(0.1)
+            wait(0.01)
             
             -- Check for proximity prompt (assuming it's named "ProximityPrompt")
             local proximityPrompt = item:FindFirstChild("ProximityPrompt")
