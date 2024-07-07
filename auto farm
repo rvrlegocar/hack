@@ -104,7 +104,7 @@ local function checkForLootAndItems()
     end
 
     if not foundItems then
-        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(0, 0, 0))
+        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(0, -100, 0))
     end
 
     isChecking = false
