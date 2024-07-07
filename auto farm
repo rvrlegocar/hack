@@ -4,7 +4,7 @@ local isChecking = false
 
 -- Offsets for teleportation
 local xOffset = 0
-local yOffset = 1.5
+local yOffset = 2
 local zOffset = 0
 
 -- Reference to the button for updating text
