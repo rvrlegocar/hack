@@ -86,7 +86,7 @@ local function printContents(folder)
                 local targetPosition = itemPosition + Vector3.new(xOffset, yOffset, zOffset)
                 
                 game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
-                wait(0.01)
+                wait(0.0001)
                 
                 -- Look at the item after teleporting
                 local humanoid = game.Players.LocalPlayer.Character.Humanoid
@@ -94,13 +94,13 @@ local function printContents(folder)
                 local camera = game.Workspace.CurrentCamera
                 
                 camera.CFrame = CFrame.new(camera.CFrame.Position, itemPosition)
-                wait(0.01)
+                wait(0.0001)
                 
                 -- Check for proximity prompt (assuming it's named "ProximityPrompt")
                 local proximityPrompt = item:FindFirstChild("ProximityPrompt")
                 if proximityPrompt then
                     proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
-                    wait(0.55)
+                    wait(0.5)
                     proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
                 end
             end
