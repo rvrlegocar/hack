@@ -11,7 +11,7 @@ local zOffset = 0
 local button = nil
 
 -- List of item names to collect
-local itemNames = {"Knife", "Bat", "Fire Axe", "Revolver", "AK-47", "Skeleton Key", "Green Key", "Red Key", "Agent 1 Key", "Crowbar", "Components", "Wrench", "Baby Venus Guytrap", "Golden Skull", "Living Eye", "Gold Bar", "Diamond", "King's Crown", "Christ Painting", "Last Supper Painting", "Green Book", "Milk", "Armor Pads", "Light Ammo Packs", "Medium Ammo Packs", "Shotgun Ammo Packs", "EMP Grenade", "Speed Juice"} -- Add more item names as needed
+local itemNames = {"Knife", "Bat", "Fire Axe", "Revolver", "AK-47", "Skeleton Key", "Green Key", "Red Key", "Agent 1 Key", "Crowbar", "Components", "Wrench", "Baby Venus Guytrap", "Golden Skull", "Living Eye", "Gold Bar", "Diamond", "King's Crown", "Christ Painting", "Last Supper Painting", "Green Book", "Milk", "Armor Pad", "Light Ammo Packs", "Medium Ammo Packs", "Shotgun Ammo Packs", "EMP Grenade", "Speed Juice"} -- Add more item names as needed
 
 -- Function to create a button
 local function createButton()
