@@ -10,6 +10,9 @@ local zOffset = 1
 -- Reference to the button for updating text
 local button = nil
 
+-- List of item names to collect
+local itemNames = {"Knife", "Bat", "Katana", "Fire Axe", "Revolver", "AK-47", "Skeleton Key", "Green Key", "Red Key", "Agent 1 Key", "Crowbar", "Components", "Wrench", "Baby Venus Guytrap", "Golden Skull", "Living Eye", "Gold Bar", "Diamond", "King's Crown", "Christ Painting", "Last Supper Painting", "Green Book", "Milk", "Armor Pads", "Light Ammo Packs", "Medium Ammo Packs", "Shotgun Ammo Packs", "EMP Grenade", "Speed Juice"} -- Add more item names as needed
+
 -- Function to create a button
 local function createButton()
     -- Create a ScreenGui to hold GUI elements
@@ -68,45 +71,47 @@ end
 local function printContents(folder)
     local foundItem = false
     for _, item in pairs(folder:GetChildren()) do
-        local itemPosition
-        
-        if item:IsA("BasePart") or item:IsA("MechPart") then
-            itemPosition = item.Position
-        elseif item:IsA("Model") then
-            itemPosition = getModelPosition(item)
-        end
-        
-        if itemPosition then
-            foundItem = true
-            -- Apply offsets to the item position
-            local targetPosition = itemPosition + Vector3.new(xOffset, yOffset, zOffset)
-            
-            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
-            wait(0.0001)
-            
-            -- Look downward after teleporting
-            local humanoid = game.Players.LocalPlayer.Character.Humanoid
-            local rootPart = humanoid.RootPart
-            local camera = game.Workspace.CurrentCamera
-            
-            local rootPosition = rootPart.Position
-            local lookAtPosition = rootPosition - Vector3.new(0, 10, 0) -- Adjust the downward offset as needed
-            
-            camera.CFrame = CFrame.new(camera.CFrame.Position, lookAtPosition)
-            wait(0.0001)
-            
-            -- Check for proximity prompt (assuming it's named "ProximityPrompt")
-            local proximityPrompt = item:FindFirstChild("ProximityPrompt")
-            if proximityPrompt then
-                proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
-                wait(0.51)
-                proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
+        if table.find(itemNames, item.Name) then
+            local itemPosition
+
+            if item:IsA("BasePart") or item:IsA("MechPart") then
+                itemPosition = item.Position
+            elseif item:IsA("Model") then
+                itemPosition = getModelPosition(item)
             end
-        end
-        
-        -- Check if loop should continue
-        if not isLooping then
-            break
+            
+            if itemPosition then
+                foundItem = true
+                -- Apply offsets to the item position
+                local targetPosition = itemPosition + Vector3.new(xOffset, yOffset, zOffset)
+                
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+                wait(0.0001)
+                
+                -- Look downward after teleporting
+                local humanoid = game.Players.LocalPlayer.Character.Humanoid
+                local rootPart = humanoid.RootPart
+                local camera = game.Workspace.CurrentCamera
+                
+                local rootPosition = rootPart.Position
+                local lookAtPosition = rootPosition - Vector3.new(0, 10, 0) -- Adjust the downward offset as needed
+                
+                camera.CFrame = CFrame.new(camera.CFrame.Position, lookAtPosition)
+                wait(0.0001)
+                
+                -- Check for proximity prompt (assuming it's named "ProximityPrompt")
+                local proximityPrompt = item:FindFirstChild("ProximityPrompt")
+                if proximityPrompt then
+                    proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
+                    wait(0.51)
+                    proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
+                end
+            end
+            
+            -- Check if loop should continue
+            if not isLooping then
+                break
+            end
         end
     end
     return foundItem
