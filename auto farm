@@ -103,7 +103,7 @@ local function printContents(folder)
                     proximityPrompt.HoldDuration = 0
                     wait(0.0001)
                     proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
-                    wait(0.1)
+                    wait(0.05)
                     proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
                 end
             end
