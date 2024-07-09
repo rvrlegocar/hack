@@ -19,16 +19,17 @@ ToggleButton.TextScaled = true
 
 -- Variables to control the aimbot state and prediction time
 local aimBotEnabled = true
-local predictionTime = 0.125  -- 100ms prediction time
+local predictionTime = 0.15  -- 100ms prediction time
 
--- Function to find the closest player to the camera, excluding the local player, "skyblockgameEX", and "fatefact"
+-- Function to find the closest player to the camera, excluding the local player, "skyblockgameEX", "fatefact", and "ScrTeet"
 local function findClosestPlayer()
     local closestPlayer = nil
     local closestDistance = math.huge
     local localPlayer = game.Players.LocalPlayer  -- Get the local player
     
     for _, player in ipairs(game.Players:GetPlayers()) do
-        if player ~= localPlayer and player.Name ~= "skyblockgameEX" and player.Name ~= "fatefact" then  -- Skip the local player, "skyblockgameEX", and "fatefact"
+        if player ~= localPlayer and player.Name ~= "skyblockgameEX" and player.Name ~= "fatefact" and player.Name ~= "ScrTeet" then
+            -- Skip the local player, "skyblockgameEX", "fatefact", and "ScrTeet"
             local character = player.Character
             local head = character and character:FindFirstChild("Head")
             
