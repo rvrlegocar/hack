@@ -94,7 +94,7 @@ local function printContents(folder)
                 local camera = game.Workspace.CurrentCamera
                 
                 camera.CFrame = CFrame.new(camera.CFrame.Position, itemPosition)
-                wait(0.01)
+                wait(0.0001)
                 
                 -- Check for proximity prompt (assuming it's named "ProximityPrompt")
                 local proximityPrompt = item:FindFirstChild("ProximityPrompt")
