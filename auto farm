@@ -113,8 +113,9 @@ local function printContents(folder)
                 -- Check for proximity prompt (assuming it's named "ProximityPrompt")
                 local proximityPrompt = item:FindFirstChild("ProximityPrompt")
                 if proximityPrompt then
+                    -- Set HoldDuration to 0 for instant activation
+                    proximityPrompt.HoldDuration = 0
                     proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
-                    wait(0.7)
                     proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
                 end
             end
