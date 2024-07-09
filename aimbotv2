@@ -19,7 +19,7 @@ ToggleButton.TextScaled = true
 
 -- Variables to control the aimbot state and prediction time
 local aimBotEnabled = true
-local predictionTime = 0.1  -- 100ms prediction time
+local predictionTime = 0.2  -- 100ms prediction time
 local switchThreshold = 500  -- Threshold distance to switch targets
 
 -- Variable to store the current target
