@@ -15,7 +15,16 @@ ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.TextScaled = true
 
 local aimBotEnabled = true
-local predictionTime = 0.2
+local predictionTime = 0.15
+
+local function isVisible(target)
+    local camera = game.Workspace.CurrentCamera
+    local origin = camera.CFrame.Position
+    local direction = (target.Position - origin).unit
+    local ray = Ray.new(origin, direction * (target.Position - origin).magnitude)
+    local hit = workspace:FindPartOnRayWithIgnoreList(ray, {game.Players.LocalPlayer.Character, target.Parent})
+    return hit == nil
+end
 
 local function findClosestPlayer()
     local closestPlayer = nil
@@ -27,7 +36,7 @@ local function findClosestPlayer()
             local character = player.Character
             local head = character and character:FindFirstChild("Head")
             
-            if head then
+            if head and isVisible(head) then
                 local distance = (game.Workspace.CurrentCamera.CFrame.p - head.Position).magnitude
                 if distance < closestDistance then
                     closestDistance = distance
