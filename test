@@ -15,7 +15,7 @@ ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.TextScaled = true
 
 local aimBotEnabled = true
-local predictionTime = 0.15
+local predictionTime = 0.125
 
 local function isVisible(target)
     local camera = game.Workspace.CurrentCamera
