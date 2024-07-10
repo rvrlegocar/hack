@@ -1,35 +1,29 @@
--- Create the GUI elements
 local ScreenGui = Instance.new("ScreenGui")
 local ToggleButton = Instance.new("TextButton")
 
--- Configure the ScreenGui
 ScreenGui.Name = "AimBotToggleGUI"
-ScreenGui.ResetOnSpawn = false  -- Ensure the GUI stays visible after respawn
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Configure the ToggleButton
 ToggleButton.Name = "ToggleButton"
 ToggleButton.Parent = ScreenGui
 ToggleButton.Text = "Toggle Aimbot"
-ToggleButton.Position = UDim2.new(1, -110, 0, 10) -- Adjusted to top right
+ToggleButton.Position = UDim2.new(1, -110, 0, 10)
 ToggleButton.Size = UDim2.new(0, 100, 0, 50)
 ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.TextScaled = true
 
--- Variables to control the aimbot state and prediction time
 local aimBotEnabled = true
-local predictionTime = 0.2  -- 100ms prediction time
+local predictionTime = 0.2
 
--- Function to find the closest player to the camera, excluding the local player, "skyblockgameEX", "fatefact", and "ScrTeet"
 local function findClosestPlayer()
     local closestPlayer = nil
     local closestDistance = math.huge
-    local localPlayer = game.Players.LocalPlayer  -- Get the local player
-    
+    local localPlayer = game.Players.LocalPlayer
+
     for _, player in ipairs(game.Players:GetPlayers()) do
         if player ~= localPlayer and player.Name ~= "skyblockgameEX" and player.Name ~= "fatefact" and player.Name ~= "ScrTeet" then
-            -- Skip the local player, "skyblockgameEX", "fatefact", and "ScrTeet"
             local character = player.Character
             local head = character and character:FindFirstChild("Head")
             
@@ -46,32 +40,26 @@ local function findClosestPlayer()
     return closestPlayer
 end
 
--- Function to calculate camera offset dynamically based on distance
 local function calculateOffset(target)
     local head = target.Character and target.Character:FindFirstChild("Head")
     if head then
         local distance = (game.Workspace.CurrentCamera.CFrame.p - head.Position).magnitude
-        local yOffset = -distance * 0  -- Adjust the multiplier to control the offset
+        local yOffset = -distance * 0
         return yOffset
     end
     return 0
 end
 
--- Function to update camera position with prediction
 local function updateCamera(targetPlayer)
     local head = targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head")
     if head then
         local targetPosition = head.Position + Vector3.new(0, calculateOffset(targetPlayer), 0)
-        
-        -- Predict player's position 100ms into the future
         local futurePosition = head.Velocity * predictionTime
         targetPosition = targetPosition + futurePosition
-        
         game.Workspace.CurrentCamera.CFrame = CFrame.new(game.Workspace.CurrentCamera.CFrame.p, targetPosition)
     end
 end
 
--- Initial setup: Find the closest player and focus on them initially
 local initialTarget = findClosestPlayer()
 if initialTarget then
     updateCamera(initialTarget)
@@ -79,7 +67,6 @@ else
     print("No players found.")
 end
 
--- Connect the update function to render step to continuously update camera position if aimbot is enabled
 game:GetService("RunService").RenderStepped:Connect(function()
     if aimBotEnabled then
         local closestPlayer = findClosestPlayer()
@@ -89,7 +76,6 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
--- Toggle the aimbot on button click
 ToggleButton.MouseButton1Click:Connect(function()
     aimBotEnabled = not aimBotEnabled
     if aimBotEnabled then
