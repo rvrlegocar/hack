@@ -32,7 +32,7 @@ local function findClosestPlayer()
     local localPlayer = game.Players.LocalPlayer
 
     for _, player in ipairs(game.Players:GetPlayers()) do
-        if player ~= localPlayer and player.Name ~= "skyblockgameEX" and player.Name ~= "fatefact" and player.Name ~= "ScrTeet" then
+        if player ~= localPlayer and player.Name ~= "skyblockgameEX" and player.Name ~= "fatefact" and player.Name ~= "ScrTeet" and player.Name ~= "Matthew777777s" then
             local character = player.Character
             local head = character and character:FindFirstChild("Head")
             
