@@ -19,7 +19,7 @@ ToggleButton.TextScaled = true
 
 -- Variables to control the aimbot state and prediction time
 local aimBotEnabled = true
-local predictionTime = 0.15  -- 100ms prediction time
+local predictionTime = 0.2  -- 100ms prediction time
 
 -- Function to find the closest player to the camera, excluding the local player, "skyblockgameEX", "fatefact", and "ScrTeet"
 local function findClosestPlayer()
