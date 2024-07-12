@@ -1,5 +1,6 @@
 local ScreenGui = Instance.new("ScreenGui")
 local ToggleButton = Instance.new("TextButton")
+local POVCircle = Instance.new("Frame")
 
 ScreenGui.Name = "AimBotToggleGUI"
 ScreenGui.ResetOnSpawn = false
@@ -14,6 +15,16 @@ ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.TextScaled = true
 
+POVCircle.Name = "POVCircle"
+POVCircle.Parent = ScreenGui
+POVCircle.Size = UDim2.new(0, 200, 0, 200)  -- Adjust the size as needed
+POVCircle.Position = UDim2.new(0.5, -100, 0.5, -100)
+POVCircle.BackgroundTransparency = 0.5
+POVCircle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+POVCircle.BorderSizePixel = 0
+POVCircle.AnchorPoint = Vector2.new(0.5, 0.5)
+POVCircle.ZIndex = 2
+
 local aimBotEnabled = true
 local predictionTime = 0.125
 
@@ -26,10 +37,15 @@ local function isVisible(target)
     return hit == nil
 end
 
-local function findClosestPlayer()
-    local closestPlayer = nil
-    local closestDistance = math.huge
+local function isInPOVCircle(screenPos)
+    local povCenter = POVCircle.AbsolutePosition + POVCircle.AbsoluteSize / 2
+    local radius = POVCircle.AbsoluteSize.X / 2
+    return (screenPos - povCenter).magnitude <= radius
+end
+
+local function findVisiblePlayerInPOV()
     local localPlayer = game.Players.LocalPlayer
+    local camera = game.Workspace.CurrentCamera
 
     for _, player in ipairs(game.Players:GetPlayers()) do
         if player ~= localPlayer then
@@ -37,23 +53,22 @@ local function findClosestPlayer()
             local head = character and character:FindFirstChild("Head")
             
             if head and isVisible(head) then
-                local distance = (game.Workspace.CurrentCamera.CFrame.p - head.Position).magnitude
-                if distance < closestDistance then
-                    closestDistance = distance
-                    closestPlayer = player
+                local screenPos, onScreen = camera:WorldToScreenPoint(head.Position)
+                if onScreen and isInPOVCircle(Vector2.new(screenPos.X, screenPos.Y)) then
+                    return player
                 end
             end
         end
     end
     
-    return closestPlayer
+    return nil
 end
 
 local function calculateOffset(target)
     local head = target.Character and target.Character:FindFirstChild("Head")
     if head then
         local distance = (game.Workspace.CurrentCamera.CFrame.p - head.Position).magnitude
-        local yOffset = -distance * 0.095
+        local yOffset = -distance * 0.1
         return yOffset
     end
     return 0
@@ -69,18 +84,11 @@ local function updateCamera(targetPlayer)
     end
 end
 
-local initialTarget = findClosestPlayer()
-if initialTarget then
-    updateCamera(initialTarget)
-else
-    print("No players found.")
-end
-
 game:GetService("RunService").RenderStepped:Connect(function()
     if aimBotEnabled then
-        local closestPlayer = findClosestPlayer()
-        if closestPlayer then
-            updateCamera(closestPlayer)
+        local targetPlayer = findVisiblePlayerInPOV()
+        if targetPlayer then
+            updateCamera(targetPlayer)
         end
     end
 end)
