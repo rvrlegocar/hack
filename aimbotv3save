@@ -1,6 +1,7 @@
 local ScreenGui = Instance.new("ScreenGui")
 local ToggleButton = Instance.new("TextButton")
 local POVCircle = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
 
 ScreenGui.Name = "AimBotToggleGUI"
 ScreenGui.ResetOnSpawn = false
@@ -24,6 +25,9 @@ POVCircle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 POVCircle.BorderSizePixel = 0
 POVCircle.AnchorPoint = Vector2.new(0.5, 0.5)
 POVCircle.ZIndex = 2
+
+UICorner.CornerRadius = UDim.new(1, 0)  -- Make the frame a circle
+UICorner.Parent = POVCircle
 
 local aimBotEnabled = true
 local predictionTime = 0.125
