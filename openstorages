@@ -1,0 +1,75 @@
+-- Function to teleport player to a part and look down
+local function teleportPlayerAndLookDown(part)
+    if part and part:IsA("BasePart") then
+        local player = game.Players.LocalPlayer
+        local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.RootPart.CFrame = part.CFrame + Vector3.new(0, 3, 0)  -- Adjust the Vector3 if needed
+            wait(0.1)  -- Small delay to ensure the character's position is updated
+            -- Look down
+            local camera = game.Workspace.CurrentCamera
+            camera.CFrame = CFrame.new(camera.CFrame.Position, camera.CFrame.Position - Vector3.new(0, 1, 0))
+        end
+    end
+end
+
+-- Function to adjust ProximityPrompt hold time to 0
+local function setProximityPromptHoldTime(prompt)
+    if prompt and prompt:IsA("ProximityPrompt") then
+        prompt.HoldDuration = 0
+    end
+end
+
+-- Main function to check and modify Workspace
+local function checkWorkspaceForStorages()
+    local storagesFolder = game.Workspace:FindFirstChild("Storages")
+
+    if storagesFolder then
+        print("Storages folder found in Workspace.")
+        local rooms = storagesFolder:GetChildren()
+        local roomCount = 0
+        local roomWithDoorCount = 0
+        local roomWithHandleCount = 0
+        local roomWithProximityPromptCount = 0
+
+        for _, room in ipairs(rooms) do
+            if room:IsA("Model") and room.Name == "Room" then
+                roomCount = roomCount + 1
+                local door = room:FindFirstChild("Door")
+                if door and door:IsA("Model") then
+                    roomWithDoorCount = roomWithDoorCount + 1
+                    local handle = door:FindFirstChild("Handle")
+                    if handle and handle:IsA("BasePart") then
+                        roomWithHandleCount = roomWithHandleCount + 1
+                        local proximityPrompt = handle:FindFirstChildOfClass("ProximityPrompt")
+                        if proximityPrompt then
+                            roomWithProximityPromptCount = roomWithProximityPromptCount + 1
+                            -- Set hold time of ProximityPrompt to 0
+                            setProximityPromptHoldTime(proximityPrompt)
+                            
+                            -- Teleport player to the Handle and look down
+                            teleportPlayerAndLookDown(handle)
+                            wait(2)  -- Adjust wait time as needed between teleports
+                        else
+                            print("Room " .. room.Name .. "'s Door's Handle does not contain a ProximityPrompt.")
+                        end
+                    else
+                        print("Room " .. room.Name .. "'s Door does not contain a Handle part.")
+                    end
+                else
+                    print("Room " .. room.Name .. " does not contain a Door model.")
+                end
+            end
+        end
+
+        print("Found " .. roomCount .. " Room models in the Storages folder.")
+        print(roomWithDoorCount .. " of these Room models contain a Door model.")
+        print(roomWithHandleCount .. " of these Door models contain a Handle part.")
+        print("Teleported to " .. roomWithProximityPromptCount .. " Handle parts and set their ProximityPrompts to hold for 0 seconds.")
+    else
+        print("Storages folder not found in Workspace.")
+    end
+end
+
+-- Run the function to check Workspace and set ProximityPrompt hold times
+checkWorkspaceForStorages()
