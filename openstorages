@@ -12,6 +12,7 @@ local function teleportPlayerAndLookDown(part)
 
             proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
             wait(1)
+            proximityPrompt:InputHoldEnd(Enum.KeyCode.E)
         end
     end
 end
