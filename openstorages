@@ -9,6 +9,9 @@ local function teleportPlayerAndLookDown(part)
             -- Look down
             local camera = game.Workspace.CurrentCamera
             camera.CFrame = CFrame.new(camera.CFrame.Position, camera.CFrame.Position - Vector3.new(0, 1, 0))
+
+            proximityPrompt:InputHoldBegin(Enum.KeyCode.E)
+            wait(1)
         end
     end
 end
